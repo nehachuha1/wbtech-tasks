@@ -1,7 +1,5 @@
 package handlers
 
-import "time"
-
 type Order struct {
 	OrderUid    string `json:"order_uid"`
 	TrackNumber string `json:"track_number"`
@@ -40,12 +38,28 @@ type Order struct {
 		Brand       string `json:"brand"`
 		Status      int    `json:"status"`
 	} `json:"items"`
-	Locale            string    `json:"locale"`
-	InternalSignature string    `json:"internal_signature"`
-	CustomerId        string    `json:"customer_id"`
-	DeliveryService   string    `json:"delivery_service"`
-	Shardkey          string    `json:"shardkey"`
-	SmId              int       `json:"sm_id"`
-	DateCreated       time.Time `json:"date_created"`
-	OofShard          string    `json:"oof_shard"`
+	Locale            string `json:"locale"`
+	InternalSignature string `json:"internal_signature"`
+	CustomerId        string `json:"customer_id"`
+	DeliveryService   string `json:"delivery_service"`
+	Shardkey          string `json:"shardkey"`
+	SmId              int    `json:"sm_id"`
+	DateCreated       string `json:"date_created"`
+	OofShard          string `json:"oof_shard"`
+}
+
+type QueryResult struct {
+	OrderSuccess    int
+	DeliverySuccess int
+	PaymentSuccess  int
+	ItemsSuccess    int
+	Error           error
+	Data            []byte
+	IsSuccessQuery  bool
+}
+
+type CacheQueryResult struct {
+	Data           interface{}
+	Message        string
+	IsSuccessQuery bool
 }

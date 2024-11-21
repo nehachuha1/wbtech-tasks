@@ -26,11 +26,11 @@ type CacheConfig struct {
 
 func NewPostgresConfig() *PostgresConfig {
 	return &PostgresConfig{
-		PostgresUser:     getFromEnv("POSTGRES_USER", "postgres"),
-		PostgresPassword: getFromEnv("POSTGRES_PASSWORD", "postgres"),
+		PostgresUser:     getFromEnv("POSTGRES_USER", "admin"),
+		PostgresPassword: getFromEnv("POSTGRES_PASSWORD", "nasud2198vsd2dv"),
 		PostgresAddress:  getFromEnv("POSTGRES_ADDRESS", "localhost"),
 		PostgresPort:     getFromEnv("POSTGRES_PORT", "5432"),
-		PostgresDatabase: getFromEnv("POSTGRES_DATABASE", "main"),
+		PostgresDatabase: getFromEnv("POSTGRES_DATABASE", "maindb"),
 	}
 }
 

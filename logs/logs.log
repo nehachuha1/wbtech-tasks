@@ -1,0 +1,48 @@
+2024-11-19T21:17:25.751+0300	INFO	log/logger.go:20	started logger	{"source": "logger", "time": "2024-11-19 21:17:25.7354 +0300 MSK m=+0.004247701"}
+2024-11-19T21:17:25.774+0300	INFO	database/init.go:103	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-19 21:17:25.7746293 +0300 MSK m=+0.043477001"}
+2024-11-19T21:19:39.520+0300	INFO	log/logger.go:20	started logger	{"source": "logger", "time": "2024-11-19 21:19:39.5046499 +0300 MSK m=+0.003783501"}
+2024-11-19T21:19:39.542+0300	INFO	database/init.go:103	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-19 21:19:39.5425313 +0300 MSK m=+0.041664901"}
+2024-11-19T21:19:39.691+0300	INFO	postgres/postgres.go:90	added new order with payment, delivery and items	{"source": "internal/database/postgres", "time": "2024-11-19 21:19:39.6908037 +0300 MSK m=+0.189937301"}
+2024-11-20T11:26:52.638+0300	INFO	log/logger.go:20	started logger	{"source": "logger", "time": "2024-11-20 11:26:52.6219925 +0300 MSK m=+0.004331301"}
+2024-11-20T11:26:52.666+0300	INFO	database/init.go:103	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-20 11:26:52.6664475 +0300 MSK m=+0.048786301"}
+2024-11-20T11:26:52.874+0300	INFO	postgres/postgres.go:90	added new order with payment, delivery and items	{"source": "internal/database/postgres", "time": "2024-11-20 11:26:52.8746735 +0300 MSK m=+0.257012301"}
+2024-11-20T11:30:14.524+0300	INFO	log/logger.go:20	started logger	{"source": "logger", "time": "2024-11-20 11:30:14.5065099 +0300 MSK m=+0.005079901"}
+2024-11-20T11:30:14.552+0300	INFO	database/init.go:103	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-20 11:30:14.5522039 +0300 MSK m=+0.050773901"}
+2024-11-20T11:31:51.539+0300	INFO	log/logger.go:20	started logger	{"source": "logger", "time": "2024-11-20 11:31:51.5233182 +0300 MSK m=+0.004336201"}
+2024-11-20T11:31:51.563+0300	INFO	database/init.go:103	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-20 11:31:51.5630456 +0300 MSK m=+0.044063601"}
+2024-11-20T11:33:27.198+0300	INFO	log/logger.go:20	started logger	{"source": "logger", "time": "2024-11-20 11:33:27.1817393 +0300 MSK m=+0.004302901"}
+2024-11-20T11:33:27.221+0300	INFO	database/init.go:103	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-20 11:33:27.2217213 +0300 MSK m=+0.044284901"}
+2024-11-20T15:31:02.805+0300	INFO	log/logger.go:20	started logger	{"source": "logger", "time": "2024-11-20 15:31:02.7891374 +0300 MSK m=+0.003735801"}
+2024-11-20T15:31:02.848+0300	INFO	database/init.go:103	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-20 15:31:02.8488966 +0300 MSK m=+0.063495001"}
+2024-11-20T15:31:18.884+0300	INFO	log/logger.go:20	started logger	{"source": "logger", "time": "2024-11-20 15:31:18.865877 +0300 MSK m=+0.004742801"}
+2024-11-20T15:31:18.904+0300	INFO	database/init.go:103	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-20 15:31:18.9042469 +0300 MSK m=+0.043112701"}
+2024-11-20T15:43:45.195+0300	INFO	log/logger.go:20	started logger	{"source": "logger", "time": "2024-11-20 15:43:45.1790377 +0300 MSK m=+0.004331201"}
+2024-11-20T15:43:45.221+0300	INFO	database/init.go:103	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-20 15:43:45.221577 +0300 MSK m=+0.046870501"}
+2024-11-20T15:43:45.410+0300	INFO	postgres/postgres.go:90	added new order with payment, delivery and items	{"source": "internal/database/postgres", "time": "2024-11-20 15:43:45.4096994 +0300 MSK m=+0.234992901"}
+2024-11-20T15:45:26.910+0300	INFO	log/logger.go:20	started logger	{"source": "logger", "time": "2024-11-20 15:45:26.8938672 +0300 MSK m=+0.003833601"}
+2024-11-20T15:45:26.932+0300	INFO	database/init.go:103	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-20 15:45:26.9324486 +0300 MSK m=+0.042415001"}
+2024-11-20T15:45:27.071+0300	WARN	postgres/postgres.go:131	can't find delivery with current order_delivery_id: lqEZwQwqdNfIgiTC	{"source": "internal/database/postgres", "time": "2024-11-20 15:45:27.0719448 +0300 MSK m=+0.181911201"}
+github.com/nehachuha1/wbtech-tasks/internal/database/postgres.(*PostgresDatabase).GetOrder
+	C:/Projects/wbtech-tasks/internal/database/postgres/postgres.go:131
+2024-11-20T15:45:54.455+0300	INFO	log/logger.go:20	started logger	{"source": "logger", "time": "2024-11-20 15:45:54.4385407 +0300 MSK m=+0.003760401"}
+2024-11-20T15:45:54.476+0300	INFO	database/init.go:103	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-20 15:45:54.4764647 +0300 MSK m=+0.041684401"}
+2024-11-20T15:45:54.631+0300	WARN	postgres/postgres.go:131	can't find delivery with current order_delivery_id: lqEZwQwqdNfIgiTC	{"source": "internal/database/postgres", "time": "2024-11-20 15:45:54.6313295 +0300 MSK m=+0.196549201"}
+github.com/nehachuha1/wbtech-tasks/internal/database/postgres.(*PostgresDatabase).GetOrder
+	C:/Projects/wbtech-tasks/internal/database/postgres/postgres.go:131
+2024-11-20T15:46:21.906+0300	INFO	log/logger.go:20	started logger	{"source": "logger", "time": "2024-11-20 15:46:21.8898644 +0300 MSK m=+0.004508001"}
+2024-11-20T15:46:21.929+0300	INFO	database/init.go:103	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-20 15:46:21.9293685 +0300 MSK m=+0.044012101"}
+2024-11-20T15:46:54.638+0300	INFO	log/logger.go:20	started logger	{"source": "logger", "time": "2024-11-20 15:46:54.6180733 +0300 MSK m=+0.005000701"}
+2024-11-20T15:46:54.662+0300	INFO	database/init.go:103	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-20 15:46:54.6625717 +0300 MSK m=+0.049499101"}
+2024-11-20T15:47:16.194+0300	INFO	log/logger.go:20	started logger	{"source": "logger", "time": "2024-11-20 15:47:16.1766223 +0300 MSK m=+0.003866601"}
+2024-11-20T15:47:16.215+0300	INFO	database/init.go:103	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-20 15:47:16.2151174 +0300 MSK m=+0.042361701"}
+2024-11-20T15:49:47.933+0300	INFO	log/logger.go:20	started logger	{"source": "logger", "time": "2024-11-20 15:49:47.9167096 +0300 MSK m=+0.004781601"}
+2024-11-20T15:49:47.954+0300	INFO	database/init.go:103	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-20 15:49:47.9546527 +0300 MSK m=+0.042724701"}
+2024-11-20T15:51:31.199+0300	INFO	log/logger.go:20	started logger	{"source": "logger", "time": "2024-11-20 15:51:31.1832893 +0300 MSK m=+0.004283301"}
+2024-11-20T15:51:31.221+0300	INFO	database/init.go:103	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-20 15:51:31.2210683 +0300 MSK m=+0.042062301"}
+2024-11-20T15:53:03.756+0300	INFO	log/logger.go:20	started logger	{"source": "logger", "time": "2024-11-20 15:53:03.7398229 +0300 MSK m=+0.004265601"}
+2024-11-20T15:53:03.776+0300	INFO	database/init.go:103	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-20 15:53:03.7767375 +0300 MSK m=+0.041180201"}
+2024-11-20T15:53:03.915+0300	WARN	postgres/postgres.go:117	can't find order with current order_uid: b563feb7b2b84b6	{"source": "internal/database/postgres", "time": "2024-11-20 15:53:03.9151859 +0300 MSK m=+0.179628601"}
+github.com/nehachuha1/wbtech-tasks/internal/database/postgres.(*PostgresDatabase).GetOrder
+	C:/Projects/wbtech-tasks/internal/database/postgres/postgres.go:117
+2024-11-20T15:53:09.627+0300	INFO	log/logger.go:20	started logger	{"source": "logger", "time": "2024-11-20 15:53:09.6106475 +0300 MSK m=+0.004276401"}
+2024-11-20T15:53:09.647+0300	INFO	database/init.go:103	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-20 15:53:09.647676 +0300 MSK m=+0.041304901"}

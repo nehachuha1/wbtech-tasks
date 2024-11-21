@@ -1,6 +1,6 @@
 package cacher
 
 type CacheController interface {
-	GetData(key string) interface{}
-	SetData(key string, value interface{})
+	GetDataFromTable(key string) interface{}
+	SetDataToTable(key string, value []byte)
 }

@@ -1,10 +1,9 @@
 package postgres
 
-import (
-	"gorm.io/gorm"
-)
+import "context"
 
 type IPostgresDatabase interface {
-	CreateOrder(conn *gorm.DB, out chan interface{}, data []byte) error
-	GetOrder(conn *gorm.DB, out chan interface{}, data []byte) ([]byte, error)
+	CreateOrder(ctx context.Context, out chan interface{}, data []byte)
+	GetOrder(ctx context.Context, out chan interface{}, data []byte)
+	GrepOrdersToCache(ctx context.Context, out chan interface{})
 }
