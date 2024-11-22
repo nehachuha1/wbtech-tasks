@@ -1,6 +1,7 @@
 package cacher
 
 type CacheController interface {
-	GetDataFromTable(key string) interface{}
-	SetDataToTable(key string, value []byte)
+	GetDataFromTable(out chan interface{}, key string)
+	SetDataToTable(out chan interface{}, data []byte)
+	ClearCache() interface{}
 }

@@ -59,7 +59,7 @@ type QueryResult struct {
 }
 
 type CacheQueryResult struct {
-	Data           interface{}
+	Data           []byte
 	Message        string
 	IsSuccessQuery bool
 }

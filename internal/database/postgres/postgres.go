@@ -26,6 +26,8 @@ type PostgresDatabase struct {
 }
 
 func (p *PostgresDatabase) CreateOrder(ctx context.Context, out chan interface{}, data []byte) {
+	defer close(out)
+
 	newOrderFromJSON := &abstr.Order{}
 	queryResult := &abstr.QueryResult{
 		OrderSuccess:    0,
@@ -94,6 +96,8 @@ func (p *PostgresDatabase) CreateOrder(ctx context.Context, out chan interface{}
 }
 
 func (p *PostgresDatabase) GetOrder(ctx context.Context, out chan interface{}, data []byte) {
+	defer close(out)
+
 	orderFromJSON := &abstr.Order{}
 	queryResult := &abstr.QueryResult{
 		OrderSuccess:    0,
@@ -178,6 +182,7 @@ func (p *PostgresDatabase) GetOrder(ctx context.Context, out chan interface{}, d
 }
 
 func (p *PostgresDatabase) GrepOrdersToCache(ctx context.Context, out chan interface{}) {
+	defer close(out)
 	var allOrders []pg.Order
 
 	queryResult := &abstr.QueryResult{
