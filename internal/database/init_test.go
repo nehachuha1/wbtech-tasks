@@ -115,18 +115,19 @@ var (
 func TestNewDataManager(t *testing.T) {
 	pgCfg := config.NewPostgresConfig()
 	cacheCfg := config.NewCacheConfig()
-	logger := log.NewLogger()
-
-	dataManager := NewDataManager(pgCfg, cacheCfg, logger)
+	logger := log.NewLogger("logs.log")
+	kafkaConfig := config.NewKafkaConfig()
+	dataManager := NewDataManager(pgCfg, cacheCfg, kafkaConfig, logger)
 	time.Sleep(5 * time.Second)
 	dataManager.Quit <- true
 }
 
 func TestPostgresDatabase_CreateOrder(t *testing.T) {
-	logger := log.NewLogger()
+	logger := log.NewLogger("logs.log")
 	pgConfig := config.NewPostgresConfig()
 	cacheConfig := config.NewCacheConfig()
-	dataManager := NewDataManager(pgConfig, cacheConfig, logger)
+	kafkaConfig := config.NewKafkaConfig()
+	dataManager := NewDataManager(pgConfig, cacheConfig, kafkaConfig, logger)
 	ctx := context.Background()
 
 	out := make(chan interface{})
@@ -137,10 +138,11 @@ func TestPostgresDatabase_CreateOrder(t *testing.T) {
 }
 
 func TestPostgresDatabase_GetOrder(t *testing.T) {
-	logger := log.NewLogger()
-	pgConfig := config.NewPostgresConfig()
-	cacheConfig := config.NewCacheConfig()
-	dataManager := NewDataManager(pgConfig, cacheConfig, logger)
+	pgCfg := config.NewPostgresConfig()
+	cacheCfg := config.NewCacheConfig()
+	logger := log.NewLogger("logs.log")
+	kafkaConfig := config.NewKafkaConfig()
+	dataManager := NewDataManager(pgCfg, cacheCfg, kafkaConfig, logger)
 	ctx := context.Background()
 
 	out := make(chan interface{})
@@ -155,9 +157,9 @@ func TestPostgresDatabase_GetOrder(t *testing.T) {
 func TestNewDataManager2(t *testing.T) {
 	pgCfg := config.NewPostgresConfig()
 	cacheCfg := config.NewCacheConfig()
-	logger := log.NewLogger()
-
-	dataManager := NewDataManager(pgCfg, cacheCfg, logger)
+	logger := log.NewLogger("logs.log")
+	kafkaConfig := config.NewKafkaConfig()
+	dataManager := NewDataManager(pgCfg, cacheCfg, kafkaConfig, logger)
 	result := dataManager.RunQuery("createOrder", inputData)
 	if result != nil {
 		t.Fatalf("wrong input data")

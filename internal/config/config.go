@@ -16,6 +16,7 @@ type PostgresConfig struct {
 
 type KafkaConfig struct {
 	KafkaURL string
+	Topic    string
 }
 
 type CacheConfig struct {
@@ -36,7 +37,8 @@ func NewPostgresConfig() *PostgresConfig {
 
 func NewKafkaConfig() *KafkaConfig {
 	return &KafkaConfig{
-		KafkaURL: getFromEnv("KAFKA_URL", "localhost:9091"),
+		KafkaURL: getFromEnv("KAFKA_URL", "127.0.0.1:9092"),
+		Topic:    getFromEnv("KAFKA_TOPIC", "orders"),
 	}
 }
 

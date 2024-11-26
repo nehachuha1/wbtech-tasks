@@ -1,0 +1,12 @@
+2024-11-25T11:35:26.603+0300	INFO	log/logger.go:21	started logger	{"source": "logger", "time": "2024-11-25 11:35:26.5871721 +0300 MSK m=+0.004730401"}
+2024-11-25T11:35:26.627+0300	INFO	database/init.go:164	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-25 11:35:26.6276149 +0300 MSK m=+0.045173201"}
+2024-11-25T11:35:26.820+0300	INFO	consumer/consumer.go:47	consumer for topic orders started	{"source": "service/kafka/consumer", "time": "2024-11-25 11:35:26.8203524 +0300 MSK m=+0.237910701"}
+2024-11-25T11:35:32.818+0300	INFO	log/logger.go:21	started logger	{"source": "logger", "time": "2024-11-25 11:35:32.8027626 +0300 MSK m=+0.003491001"}
+2024-11-25T11:35:32.838+0300	INFO	database/init.go:164	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-25 11:35:32.8385377 +0300 MSK m=+0.039266101"}
+2024-11-25T11:35:32.987+0300	INFO	consumer/consumer.go:47	consumer for topic orders started	{"source": "service/kafka/consumer", "time": "2024-11-25 11:35:32.9875942 +0300 MSK m=+0.188322601"}
+2024-11-25T11:35:42.811+0300	INFO	log/logger.go:21	started logger	{"source": "logger", "time": "2024-11-25 11:35:42.7954225 +0300 MSK m=+0.004318801"}
+2024-11-25T11:35:42.830+0300	INFO	database/init.go:164	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-25 11:35:42.8305118 +0300 MSK m=+0.039408101"}
+2024-11-25T11:35:42.967+0300	INFO	consumer/consumer.go:47	consumer for topic orders started	{"source": "service/kafka/consumer", "time": "2024-11-25 11:35:42.9679055 +0300 MSK m=+0.176801801"}
+2024-11-25T11:35:42.972+0300	INFO	postgres/postgres.go:93	added new order with payment, delivery and items	{"source": "internal/database/postgres", "time": "2024-11-25 11:35:42.972406 +0300 MSK m=+0.181302301"}
+2024-11-25T11:35:48.779+0300	INFO	log/logger.go:21	started logger	{"source": "logger", "time": "2024-11-25 11:35:48.7630125 +0300 MSK m=+0.004832801"}
+2024-11-25T11:35:48.798+0300	INFO	database/init.go:164	initialized database handlers	{"source": "pkg/database/connect", "time": "2024-11-25 11:35:48.7988841 +0300 MSK m=+0.040704401"}

@@ -1,18 +1,19 @@
 package log
 
 import (
+	"fmt"
 	"go.uber.org/zap"
 	"time"
 )
 
-func NewLogger() *zap.SugaredLogger {
+func NewLogger(path string) *zap.SugaredLogger {
 	config := zap.NewDevelopmentConfig()
-	config.OutputPaths = []string{"../../logs/logs.log", "stdout"}
+	config.OutputPaths = []string{path, "stdout"}
 
 	logger, err := config.Build()
 
 	if err != nil {
-		panic("failed to configure logger")
+		panic(fmt.Sprintf("failed to configure logger: %v", err))
 	}
 
 	defer logger.Sync()
