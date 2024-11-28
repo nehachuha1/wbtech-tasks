@@ -1,7 +1,6 @@
 package postgres
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/lib/pq"
@@ -11,7 +10,6 @@ import (
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"strconv"
-	"time"
 )
 
 const (
@@ -19,13 +17,16 @@ const (
 	ErrOnFindRow
 )
 
+// Управляющая структура для базы данных Postgres. Работа с БД происходит через либу gorm
 type PostgresDatabase struct {
 	DatabaseConnection *gorm.DB
 	Logger             *zap.SugaredLogger
 	Quit               chan bool
 }
 
-func (p *PostgresDatabase) CreateOrder(ctx context.Context, out chan interface{}, data []byte) {
+// Обработчик запроса на создание заказа. В нём мы декомпозируем входящий запрос на несколько сущностей
+// и добавляем их в базу данных.
+func (p *PostgresDatabase) CreateOrder(out chan interface{}, data []byte) {
 	defer close(out)
 
 	newOrderFromJSON := &abstr.Order{}
@@ -52,8 +53,7 @@ func (p *PostgresDatabase) CreateOrder(ctx context.Context, out chan interface{}
 
 	result := p.DatabaseConnection.Table("deliveries").Create(newDelivery)
 	if result.Error != nil {
-		p.Logger.Warnw("can't create new row in deliveries table",
-			"source", "internal/database/postgres", "time", time.Now().String())
+		p.Logger.Warn("can't create new row in deliveries table")
 		queryResult.DeliverySuccess = ErrOnCreateRow
 		queryResult.Error = wrapError(queryResult.Error, result.Error,
 			"failed on creating new row in deliveries table")
@@ -61,8 +61,7 @@ func (p *PostgresDatabase) CreateOrder(ctx context.Context, out chan interface{}
 	}
 	result = p.DatabaseConnection.Table("payments").Create(newPayment)
 	if result.Error != nil {
-		p.Logger.Warnw("can't create new row in payments table",
-			"source", "internal/database/postgres", "time", time.Now().String())
+		p.Logger.Warn("can't create new row in payments table")
 		queryResult.PaymentSuccess = ErrOnCreateRow
 		queryResult.Error = wrapError(queryResult.Error, result.Error,
 			"failed on creating new row in payments table")
@@ -72,9 +71,8 @@ func (p *PostgresDatabase) CreateOrder(ctx context.Context, out chan interface{}
 	for _, item := range newItems {
 		result = p.DatabaseConnection.Table("items").Create(item)
 		if result.Error != nil {
-			p.Logger.Warnw(
-				fmt.Sprintf("can't create new row in items table for item with ChrtId %v", item.ChrtId),
-				"source", "internal/database/postgres", "time", time.Now().String())
+			p.Logger.Warn(
+				fmt.Sprintf("can't create new row in items table for item with ChrtId %v", item.ChrtId))
 			queryResult.ItemsSuccess = ErrOnCreateRow
 			queryResult.IsSuccessQuery = false
 			queryResult.Error = wrapError(queryResult.Error, result.Error,
@@ -83,19 +81,19 @@ func (p *PostgresDatabase) CreateOrder(ctx context.Context, out chan interface{}
 	}
 	result = p.DatabaseConnection.Table("orders").Create(newOrder)
 	if result.Error != nil {
-		p.Logger.Warnw("can't create new row in orders table",
-			"source", "internal/database/postgres", "time", time.Now().String())
+		p.Logger.Warn("can't create new row in orders table")
 		queryResult.OrderSuccess = ErrOnCreateRow
 		queryResult.Error = wrapError(queryResult.Error, result.Error,
 			"failed on creating new row in orders table")
 		queryResult.IsSuccessQuery = false
 	}
-	p.Logger.Infow("added new order with payment, delivery and items",
-		"source", "internal/database/postgres", "time", time.Now().String())
+	p.Logger.Info("added new order with payment, delivery and items")
 	out <- queryResult
 }
 
-func (p *PostgresDatabase) GetOrder(ctx context.Context, out chan interface{}, data []byte) {
+// Обработчик на получение заказа из БД. В нём мы "собираем" данные с сущностей постгреса в единый формат JSON,
+// который представлен в описании к заданию
+func (p *PostgresDatabase) GetOrder(out chan interface{}, data []byte) {
 	defer close(out)
 
 	orderFromJSON := &abstr.Order{}
@@ -119,8 +117,7 @@ func (p *PostgresDatabase) GetOrder(ctx context.Context, out chan interface{}, d
 	result := p.DatabaseConnection.Table("orders").Where("order_uid = ?", orderFromJSON.OrderUid).First(
 		order)
 	if result.Error != nil {
-		p.Logger.Warnw(fmt.Sprintf("can't find order with current order_uid: %v", orderFromJSON.OrderUid),
-			"source", "internal/database/postgres", "time", time.Now().String())
+		p.Logger.Warn(fmt.Sprintf("can't find order with current order_uid: %v", orderFromJSON.OrderUid))
 		queryResult.OrderSuccess = ErrOnFindRow
 		queryResult.Error = wrapError(queryResult.Error, result.Error,
 			"failed on find row in orders table")
@@ -133,8 +130,8 @@ func (p *PostgresDatabase) GetOrder(ctx context.Context, out chan interface{}, d
 	result = p.DatabaseConnection.Table("deliveries").Where("delivery_id = ?",
 		order.OrderDeliveryID).First(delivery)
 	if result.Error != nil {
-		p.Logger.Warnw(fmt.Sprintf("can't find delivery with current order_delivery_id: %v",
-			order.OrderDeliveryID), "source", "internal/database/postgres", "time", time.Now().String())
+		p.Logger.Warn(fmt.Sprintf("can't find delivery with current order_delivery_id: %v",
+			order.OrderDeliveryID))
 		queryResult.DeliverySuccess = ErrOnFindRow
 		queryResult.Error = wrapError(queryResult.Error, result.Error,
 			"failed on find row in deliveries table")
@@ -146,8 +143,7 @@ func (p *PostgresDatabase) GetOrder(ctx context.Context, out chan interface{}, d
 		item := &pg.Item{}
 		result = p.DatabaseConnection.Table("items").Where("chrt_id = ?", itemID).First(item)
 		if result.Error != nil {
-			p.Logger.Warnw(fmt.Sprintf("can't find item with chrt_id: %v", itemID),
-				"source", "internal/database/postgres", "time", time.Now().String())
+			p.Logger.Warn(fmt.Sprintf("can't find item with chrt_id: %v", itemID))
 			queryResult.ItemsSuccess = ErrOnFindRow
 			queryResult.Error = wrapError(queryResult.Error, result.Error,
 				"failed on find row in items table")
@@ -160,8 +156,7 @@ func (p *PostgresDatabase) GetOrder(ctx context.Context, out chan interface{}, d
 	result = p.DatabaseConnection.Table("payments").Where("payment_id = ?",
 		order.OrderPaymentID).First(payment)
 	if result.Error != nil {
-		p.Logger.Warnw(fmt.Sprintf("can't find item with chrt_id: %v", order.OrderPaymentID),
-			"source", "internal/database/postgres", "time", time.Now().String())
+		p.Logger.Warn(fmt.Sprintf("can't find item with chrt_id: %v", order.OrderPaymentID))
 		queryResult.PaymentSuccess = ErrOnFindRow
 		queryResult.Error = wrapError(queryResult.Error, result.Error,
 			"failed on find row in payments table")
@@ -170,8 +165,7 @@ func (p *PostgresDatabase) GetOrder(ctx context.Context, out chan interface{}, d
 
 	orderData, err := convertOrderToJSON(order, delivery, payment, items)
 	if err != nil {
-		p.Logger.Warnw(fmt.Sprintf("marshaling to JSON order error: %v", err),
-			"source", "internal/database/postgres", "time", time.Now().String())
+		p.Logger.Warn(fmt.Sprintf("marshaling to JSON order error: %v", err))
 		queryResult.Error = wrapError(queryResult.Error, err, "marshaling to JSON order error")
 		queryResult.Data = []byte("no data")
 		queryResult.IsSuccessQuery = false
@@ -181,7 +175,10 @@ func (p *PostgresDatabase) GetOrder(ctx context.Context, out chan interface{}, d
 	out <- queryResult
 }
 
-func (p *PostgresDatabase) GrepOrdersToCache(ctx context.Context, out chan interface{}) {
+// Метод, используемый в главной управляющей структуре DataManager для того, чтобы список всех заказов с БД.
+// На выходе мы получаем слайс заказов, удовлетворяющих JSON из тех.задания, которые далее конвертируются в слайс байт
+// и дальше идут на обработчик добавления данных в кэш
+func (p *PostgresDatabase) GrepOrdersFromDatabase(out chan interface{}) {
 	defer close(out)
 	var allOrders []pg.Order
 
@@ -193,20 +190,35 @@ func (p *PostgresDatabase) GrepOrdersToCache(ctx context.Context, out chan inter
 
 	result := p.DatabaseConnection.Table("orders").Find(&allOrders)
 	if result.Error != nil {
-		p.Logger.Warnw(fmt.Sprintf("failed on getting all rows in table 'orders'"),
-			"source", "internal/database/postgres", "time", time.Now().String())
+		p.Logger.Warn(fmt.Sprintf("failed on getting all rows in table 'orders'"))
 		queryResult.Error = fmt.Errorf("failed on getting all rows in table 'orders': %v", result.Error)
 	}
-	data, err := json.Marshal(allOrders)
-	if err != nil {
-		p.Logger.Warnw(fmt.Sprintf("marshaling to JSON order error: %v", err),
-			"source", "internal/database/postgres", "time", time.Now().String())
-		queryResult.Error = fmt.Errorf("marshaling to JSON order error: %v", err)
+	fetchedOrders := make([]*abstr.Order, 0)
+	for _, val := range allOrders {
+		tempOrder := &abstr.Order{OrderUid: val.OrderUid}
+		data, _ := json.Marshal(tempOrder)
+		ch := make(chan interface{})
+		go p.GetOrder(ch, data)
+
+		orderFromDB := (<-ch).(*abstr.QueryResult)
+		if orderFromDB.IsSuccessQuery && orderFromDB.Data != nil {
+			tempOrder = &abstr.Order{}
+			_ = json.Unmarshal(orderFromDB.Data, tempOrder)
+			fetchedOrders = append(fetchedOrders, tempOrder)
+		}
 	}
+	convertedData, err := json.Marshal(fetchedOrders)
+	if err != nil {
+		queryResult.IsSuccessQuery = false
+		queryResult.Error = fmt.Errorf("failed on marshaling orders from DB to []byte: %v", err)
+	}
+	queryResult.Data = convertedData
 	queryResult.IsSuccessQuery = true
-	queryResult.Data = data
 	out <- queryResult
 }
+
+// Далее идут вспомогательные функции, которые используются для декомпозии и "обратной сборки"
+// входящих и исходящих заказов
 
 func makeNewDelivery(orderFromJSON *abstr.Order) *pg.Delivery {
 	newDelivery := &pg.Delivery{
@@ -391,6 +403,7 @@ func convertOrderToJSON(order *pg.Order, delivery *pg.Delivery, payment *pg.Paym
 	return data, nil
 }
 
+// Функция для обёртки ошибок (нужна для того, чтобы оборачивать ошибки, когда мы работаем с несколькими таблицами)
 func wrapError(oldErr error, newErr error, newErrMessage string) error {
 	if oldErr != nil {
 		return fmt.Errorf("%s: %v | %v", newErrMessage, newErr, oldErr)

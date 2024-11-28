@@ -1,9 +1,8 @@
 package postgres
 
-import "context"
-
+// Интерфейс для работы с Postgres
 type IPostgresDatabase interface {
-	CreateOrder(ctx context.Context, out chan interface{}, data []byte)
-	GetOrder(ctx context.Context, out chan interface{}, data []byte)
-	GrepOrdersToCache(ctx context.Context, out chan interface{})
+	CreateOrder(out chan interface{}, data []byte)
+	GetOrder(out chan interface{}, data []byte)
+	GrepOrdersFromDatabase(out chan interface{})
 }

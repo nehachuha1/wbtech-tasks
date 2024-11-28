@@ -1,5 +1,6 @@
 package handlers
 
+// Структура со входящим JSON, которую мы в дальнейшем декомпозируем
 type Order struct {
 	OrderUid    string `json:"order_uid"`
 	TrackNumber string `json:"track_number"`
@@ -48,6 +49,10 @@ type Order struct {
 	OofShard          string `json:"oof_shard"`
 }
 
+// Структура, которая используется в модуле работы с Postgres.
+// Ключевые поля этой структуры - IsSuccessQuery и Data.
+// По булевому значению поля мы в дальнейшем проверяем, был ли успешен запрос. Если он не увенчался успехом,
+// То обрабатываем ошибку из поля Error
 type QueryResult struct {
 	OrderSuccess    int
 	DeliverySuccess int
@@ -58,6 +63,8 @@ type QueryResult struct {
 	IsSuccessQuery  bool
 }
 
+// Аналогичная структура, но которая использутся в модуле работы с in memory кэшированием.
+// Логика работы аналогичная
 type CacheQueryResult struct {
 	Data           []byte
 	Message        string

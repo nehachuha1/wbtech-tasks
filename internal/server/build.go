@@ -10,12 +10,13 @@ import (
 	"html/template"
 )
 
+// Сборка в роутер хэндлера заказов + инициализация дата менеджера. Логгер передаём из main.go
 func BuildNewServer(templ *template.Template, logger *zap.SugaredLogger) *mux.Router {
 	kafkaConfig := config.NewKafkaConfig()
 	cacheConfig := config.NewCacheConfig()
 	postgresConfig := config.NewPostgresConfig()
 
-	dataManager := database.NewDataManager(postgresConfig, cacheConfig, kafkaConfig)
+	dataManager := database.NewDataManager(postgresConfig, cacheConfig, kafkaConfig, logger)
 	kafkaProducer := producer.NewKafkaProducer(kafkaConfig, logger)
 
 	ordersHandler := &orders.OrderHandler{

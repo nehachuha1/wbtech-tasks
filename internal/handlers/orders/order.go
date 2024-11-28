@@ -18,15 +18,8 @@ type OrderHandler struct {
 	KafkaProducer *producer.KafkaProducer
 }
 
-//func NewOrderHandler(pgCfg *config.PostgresConfig, kafkaConfig *config.KafkaConfig, cacheCfg *config.CacheConfig,
-//	logger *zap.SugaredLogger) *OrderHandler {
-//	return &OrderHandler{
-//		Logger:        logger,
-//		DataManager:   database.NewDataManager(pgCfg, cacheCfg, kafkaConfig, logger),
-//		KafkaProducer: producer.NewKafkaProducer(kafkaConfig, logger),
-//	}
-//}
-
+// Обработчик запроса на создание заказа. Если запрос успешно маршалится в структуру нового заказа, то
+// мы пушим тело запроса в очередь топика orders и отдаём JSON о том, что запрос успешен.
 func (h *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Wrong method", http.StatusBadRequest)
@@ -41,8 +34,22 @@ func (h *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadGateway)
 	}
+
+	result := struct {
+		Code    int
+		Message string
+	}{
+		Code:    200,
+		Message: "successfully created order",
+	}
+
+	data, _ = json.Marshal(result)
+	w.Write(data)
 }
 
+// Обработчик запроса на получение заказа. Опять-таки пытаемся замаршалить тело запроса в структуру Order.
+// Ключевым полем является для нас order_uid, по которому мы уже собираем заказ в нужный нам формат JSON и
+// выводим на экран
 func (h *OrderHandler) GetOrder(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Wrong method", http.StatusBadRequest)
@@ -64,9 +71,22 @@ func (h *OrderHandler) GetOrder(w http.ResponseWriter, r *http.Request) {
 	out := make(chan []byte)
 	go h.DataManager.RunQuery("getOrder", data, out)
 	result := <-out
-	w.Write(result)
+	if result != nil {
+		w.Write(result)
+		return
+	}
+	message := struct {
+		Code    int
+		Message string
+	}{
+		Code:    400,
+		Message: "can't find order with this order_uid",
+	}
+	data, _ = json.Marshal(message)
+	w.Write(data)
 }
 
+// Дефолтный обработчик корневого запроса. Выводит темплейт index.html
 func (h *OrderHandler) Index(w http.ResponseWriter, r *http.Request) {
 	err := h.Templates.ExecuteTemplate(w, "index.html", "")
 	if err != nil {
@@ -75,6 +95,7 @@ func (h *OrderHandler) Index(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Вспомогательная функция для того, чтобы маршалить запрос в структуру Order.
 func ParseBodyToOrder(r *http.Request) ([]byte, error) {
 	order := new(handlers.Order)
 

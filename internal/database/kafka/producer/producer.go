@@ -5,9 +5,9 @@ import (
 	"github.com/IBM/sarama"
 	"github.com/nehachuha1/wbtech-tasks/internal/config"
 	"go.uber.org/zap"
-	"time"
 )
 
+// Управляющая структура для работы с отправителем сообщений в кафке.
 type KafkaProducer struct {
 	BrokerURL []string
 	Topic     string
@@ -15,6 +15,7 @@ type KafkaProducer struct {
 	Quit      chan bool
 }
 
+// Инициализация управляющей структуры
 func NewKafkaProducer(kafkaConfig *config.KafkaConfig, logger *zap.SugaredLogger) *KafkaProducer {
 	return &KafkaProducer{
 		BrokerURL: []string{kafkaConfig.KafkaURL},
@@ -24,6 +25,7 @@ func NewKafkaProducer(kafkaConfig *config.KafkaConfig, logger *zap.SugaredLogger
 	}
 }
 
+// Подключение нового продюсера к брокеру очередей.
 func (kp *KafkaProducer) connectProducer() (sarama.SyncProducer, error) {
 	producerConfig := sarama.NewConfig()
 	producerConfig.Producer.Return.Successes = true
@@ -33,15 +35,15 @@ func (kp *KafkaProducer) connectProducer() (sarama.SyncProducer, error) {
 	return sarama.NewSyncProducer(kp.BrokerURL, producerConfig)
 }
 
+// Основной метод структуры для пуша сообщений в очередь. При вызове метода каждый раз инициализируем нового продюсера,
+// пушим сообщение в топик и закрываем текущего продюсера
 func (kp *KafkaProducer) PushOrderToQueue(data []byte) error {
 	producer, err := kp.connectProducer()
 	if err != nil {
-		kp.Logger.Fatalw(fmt.Sprintf("failed on initialize producer to topic %v", kp.Topic),
-			"source", "service/kafka/consumer", "time", time.Now().String())
+		kp.Logger.Fatal(fmt.Sprintf("failed on initialize producer to topic %v", kp.Topic))
 		return err
 	}
-	kp.Logger.Infow(fmt.Sprintf("initialized producer for topic %v", kp.Topic),
-		"source", "service/kafka/consumer", "time", time.Now().String())
+	kp.Logger.Info(fmt.Sprintf("initialized producer for topic %v", kp.Topic))
 	defer producer.Close()
 
 	msg := &sarama.ProducerMessage{
@@ -50,11 +52,9 @@ func (kp *KafkaProducer) PushOrderToQueue(data []byte) error {
 	}
 	_, _, err = producer.SendMessage(msg)
 	if err != nil {
-		kp.Logger.Fatalw(fmt.Sprintf("failed to send message to topic %v", kp.Topic),
-			"source", "service/kafka/consumer", "time", time.Now().String())
+		kp.Logger.Fatal(fmt.Sprintf("failed to send message to topic %v", kp.Topic))
 		return err
 	}
-	kp.Logger.Infow(fmt.Sprintf("sent message to topic %v", kp.Topic),
-		"source", "service/kafka/consumer", "time", time.Now().String())
+	kp.Logger.Info(fmt.Sprintf("sent message to topic %v", kp.Topic))
 	return nil
 }

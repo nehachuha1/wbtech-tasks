@@ -1,6 +1,0 @@
-2024-11-25T11:34:21.690+0300	INFO	log/logger.go:21	started logger	{"source": "logger", "time": "2024-11-25 11:34:21.6746093 +0300 MSK m=+0.003205901"}
-2024-11-25T11:34:21.706+0300	INFO	producer/producer.go:43	initialized producer for topic orders	{"source": "service/kafka/consumer", "time": "2024-11-25 11:34:21.7062812 +0300 MSK m=+0.034877801"}
-2024-11-25T11:34:21.732+0300	INFO	producer/producer.go:57	sent message to topic orders	{"source": "service/kafka/consumer", "time": "2024-11-25 11:34:21.7322723 +0300 MSK m=+0.060868901"}
-2024-11-25T11:39:07.904+0300	INFO	log/logger.go:21	started logger	{"source": "logger", "time": "2024-11-25 11:39:07.8886349 +0300 MSK m=+0.002657601"}
-2024-11-25T11:39:07.909+0300	INFO	producer/producer.go:43	initialized producer for topic orders	{"source": "service/kafka/consumer", "time": "2024-11-25 11:39:07.9093621 +0300 MSK m=+0.023384801"}
-2024-11-25T11:39:07.919+0300	INFO	producer/producer.go:57	sent message to topic orders	{"source": "service/kafka/consumer", "time": "2024-11-25 11:39:07.9193461 +0300 MSK m=+0.033368801"}

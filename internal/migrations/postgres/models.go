@@ -4,6 +4,11 @@ import (
 	"github.com/lib/pq"
 )
 
+// Файл с внутренними сущностями сервиса
+
+// Структура сущности заказа. В ней переопределены поля с доставкой, списком вещей и платежом.
+// В дальнейшем при поступлении нового JSON в переопределенные поля присваиваются новые ID,
+// по ним сервис ищет в нескольких таблицах информацию и собирает в обратный JSON
 type Order struct {
 	OrderUid          string
 	TrackNumber       string
@@ -21,6 +26,7 @@ type Order struct {
 	OofShard          string
 }
 
+// Сущность для доставки
 type Delivery struct {
 	DeliveryID string
 	Name       string
@@ -32,6 +38,7 @@ type Delivery struct {
 	Email      string
 }
 
+// Сущность для платежа
 type Payment struct {
 	PaymentID    string
 	Transaction  string
@@ -46,6 +53,7 @@ type Payment struct {
 	CustomFee    int
 }
 
+// Сущность для вещи из заказа. В таблице orders хранится массив из chrt_id
 type Item struct {
 	ChrtId      int
 	TrackNumber string

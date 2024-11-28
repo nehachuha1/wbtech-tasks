@@ -9,17 +9,20 @@ import (
 	"time"
 )
 
+// Управляющая структура для работы с хранилищем кэша
 type CacheVault struct {
 	Data          map[string][]byte
 	mu            sync.RWMutex
 	ClearInterval time.Duration
 	CacheLimit    int64
-	CurrentLength int64
 	Logger        *zap.SugaredLogger
 	Quit          chan bool
 }
 
+// Метод для получения данных по order_uid из кэша
 func (cache *CacheVault) GetDataFromTable(out chan interface{}, key string) {
+	defer close(out)
+
 	queryResult := &ch.CacheQueryResult{
 		IsSuccessQuery: false,
 		Message:        "empty",
@@ -40,7 +43,10 @@ func (cache *CacheVault) GetDataFromTable(out chan interface{}, key string) {
 	out <- queryResult
 }
 
+// Метод для добавления в кэш новых данных, где ключом будет order_uid
 func (cache *CacheVault) SetDataToTable(out chan interface{}, data []byte) {
+	defer close(out)
+
 	queryResult := &ch.CacheQueryResult{
 		Data:           nil,
 		Message:        "empty",
@@ -51,8 +57,7 @@ func (cache *CacheVault) SetDataToTable(out chan interface{}, data []byte) {
 	err := json.Unmarshal(data, order)
 
 	if err != nil {
-		cache.Logger.Warnw(fmt.Sprintf("marshaling to JSON order error: %v", err),
-			"source", "internal/database/cacher", "time", time.Now().String())
+		cache.Logger.Warn(fmt.Sprintf("marshaling to JSON order error: %v", err))
 		queryResult.Message = fmt.Sprintf("marshaling to JSON order error: %v", err)
 		out <- queryResult
 	}
@@ -64,9 +69,8 @@ func (cache *CacheVault) SetDataToTable(out chan interface{}, data []byte) {
 		cache.mu.Lock()
 		cache.Data[order.OrderUid] = data
 		cache.mu.Unlock()
-		cache.Logger.Infow(
-			fmt.Sprintf("saved order with order_id %v in cache", order.OrderUid),
-			"source", "internal/database/cacher", "time", time.Now().String())
+		cache.Logger.Info(
+			fmt.Sprintf("saved order with order_id %v in cache", order.OrderUid))
 		queryResult.IsSuccessQuery = true
 		queryResult.Message = fmt.Sprintf("saved order with order_id %v in cache")
 		queryResult.Data = data
@@ -79,9 +83,8 @@ func (cache *CacheVault) SetDataToTable(out chan interface{}, data []byte) {
 		cache.Data[order.OrderUid] = data
 		cache.mu.Unlock()
 
-		cache.Logger.Infow(
-			fmt.Sprintf("rewrite cache for order with order_id %v", order.OrderUid),
-			"source", "internal/database/cacher", "time", time.Now().String())
+		cache.Logger.Info(
+			fmt.Sprintf("rewrite cache for order with order_id %v", order.OrderUid))
 		queryResult.IsSuccessQuery = true
 		queryResult.Message = fmt.Sprintf("resaved order with order_id %v in cache")
 		queryResult.Data = data
@@ -89,6 +92,23 @@ func (cache *CacheVault) SetDataToTable(out chan interface{}, data []byte) {
 	}
 }
 
+// Метод для подгрузки в кэш всех заказов. Используется при инициализации новой управляющей структуры для работы
+// с данными
+func (cache *CacheVault) LoadOrdersToCache(data []byte) {
+	var allOrders []ch.Order
+	err := json.Unmarshal(data, &allOrders)
+	if err != nil {
+		cache.Logger.Warn(fmt.Sprintf("failed on unmarshaling bytes to slice of orders: %v", err))
+	}
+	for _, order := range allOrders {
+		out := make(chan interface{})
+		marshaledOrder, _ := json.Marshal(order)
+		go cache.SetDataToTable(out, marshaledOrder)
+	}
+	cache.Logger.Info("successfully loaded orders to cache")
+}
+
+// Метод для очистки кэша
 func (cache *CacheVault) ClearCache() interface{} {
 	orderIDs := make([]string, 0)
 
@@ -102,9 +122,7 @@ func (cache *CacheVault) ClearCache() interface{} {
 	defer cache.mu.Unlock()
 	for _, key := range orderIDs {
 		if _, isExists := cache.Data[key]; isExists {
-			cache.Logger.Infow(fmt.Sprintf("found order with order_id %v in cache", key),
-				"source", "internal/database/cacher", "time", time.Now().String())
-			cache.Data[key] = nil
+			delete(cache.Data, key)
 		}
 	}
 	queryResult := &ch.CacheQueryResult{
@@ -112,8 +130,6 @@ func (cache *CacheVault) ClearCache() interface{} {
 		Message:        "successfully cleared cache",
 		IsSuccessQuery: true,
 	}
-	cache.Logger.Infow(
-		"cleared cache for CacheVault",
-		"source", "internal/database/cacher", "time", time.Now().String())
+	cache.Logger.Info("cleared cache in CacheVault")
 	return queryResult
 }

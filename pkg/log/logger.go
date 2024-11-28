@@ -3,9 +3,9 @@ package log
 import (
 	"fmt"
 	"go.uber.org/zap"
-	"time"
 )
 
+// Инициализация логгера в зависимости от того, какой файл с логами нужен
 func NewLogger(path string) *zap.SugaredLogger {
 	config := zap.NewDevelopmentConfig()
 	config.OutputPaths = []string{path, "stdout"}
@@ -18,6 +18,6 @@ func NewLogger(path string) *zap.SugaredLogger {
 
 	defer logger.Sync()
 	sugaredLogger := logger.Sugar()
-	sugaredLogger.Infow("started logger", "source", "logger", "time", time.Now().String())
+	sugaredLogger.Info("started logger")
 	return sugaredLogger
 }
